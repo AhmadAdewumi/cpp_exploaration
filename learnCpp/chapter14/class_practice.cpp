@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+#include <string_view>
+
+class BankAccount {
+private:
+  int balance;
+  std::string owner;
+
+public:
+  // BankAccount() : balance{0}, owner{"Unknown"} {}
+
+  // BankAccount(std::string ownerName) : balance(0), owner(ownerName) {}
+
+  // BankAccount(int balance, std::string ownerName): balance(balance), owner(ownerName){}
+  // 
+
+  //-- wanna play with delegating constructors
+  BankAccount(std::string ownerName, int initialBalance) : owner{ownerName}, balance{initialBalance}{}
+  BankAccount(std::string ownerName): BankAccount(ownerName, 0){}
+  BankAccount(): BankAccount("Unknown", 0){}
+
+  int deposit(int amount){
+      if (balance <= 0){
+          std::cout << "Amount can't be negative." << "\n";
+      }
+      return balance+=amount;
+  }
+
+  bool withdraw(int amount){
+      if (amount <= 0) {
+          std::cout << "Withdrawal must be positive." << "\n";
+          return false;
+      }
+
+      if ( amount > balance) {
+          std::cout << "Insufficient funds";
+          return false;
+      }
+      balance-=amount;
+      return true;
+  }
+
+  int getBalance() const{
+      return balance;
+  }
+
+  const std::string& getOwner() const{
+      return owner;
+  }
+
+}
