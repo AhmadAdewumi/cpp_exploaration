@@ -15,11 +15,11 @@ class Triad{
             return first;
         }
 
-        T getSecond() const{
+        U getSecond() const{
             return second;
         }
 
-        T getThird() const{
+        V getThird() const{
             return third;
         }
 
