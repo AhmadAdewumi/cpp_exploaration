@@ -49,4 +49,17 @@ public:
       return owner;
   }
 
-}
+  // --- friend keyword --- to give access to a specific fnctn or class to our private entities
+  // -- say, in our bank custoomers can't go in to view thier account details, but we could give an auditor
+  // --- access, so he could check and get back to them
+  friend class Auditor;
+};
+
+//--- then we define the class outside, and it could access the private members of the BankAccount class
+class Auditor{
+    public:
+        void checkAccDetails(const BankAccount& account){
+            std::cout << "Account owner: " << account.owner << "\n";
+            std::cout << "Account balance: " << account.balance << "\n";
+        }
+};
