@@ -224,7 +224,51 @@ public:
       std::cout << *current << "\n"; //-- we get the T being pointed at
     }
   }
+
+  //--- some more stuffs on lambdas
+  template<typename Func>
+  void forEach(Func func){
+      for(auto& event : events){
+          func(event);
+      }
+  }
+
+  template<typename Predicate>
+  std::size_t countIf(Predicate predicate) const{
+      std::size_t count{};
+
+      for(const auto& event : events){
+          if (predicate(event)) {
+              ++count;
+          }
+      }
+
+      return count;
+  }
+
+  template<typename  Predicate>
+  T* findIf(Predicate predicate){
+      for(auto& event : events){
+          if (predicate(event)) {
+              return &event;
+          }
+      }
+      return nullptr;
+  }
+
+  template<typename  Predicate>
+  void removeIf(Predicate predicate){
+      events.erase(
+          std::remove_if(
+              events.begin(),
+              events.end(),
+              predicate
+          ), events.end()
+      );
+  }
+  
 };
+
 
 //-- forward refencing --woo hoo
 template <typename Func> auto benchmark(Func &&func) {
@@ -297,5 +341,36 @@ int main() {
   std::cout << "Selction sort benchmark: " << selectionSortTime.count()
             << " microsecond(us) \n";
 
+  //-- some lambda experiments
+  eventStore.forEach(
+      [](Event& event){
+          std::cout << event << "\n";
+      }
+  );
+
+  auto successFullEventCountUsingLambda = eventStore.countIf(
+      [](const Event& event){
+          return event.getStatus() == Status::Successful;
+      }
+  );
+
+  std::cout << "Successful event count is: " << successFullEventCountUsingLambda << "\n";
+
+  auto findEventUsingLambda = eventStore.findIf(
+      [](Event& event){
+          return event.getValue() > 500;
+      }
+  );
+
+  std::cout << "And those events greater than 500 are: " << findEventUsingLambda << "\n";
+
+  eventStore.removeIf(
+      [] (const Event& event){
+          return event.getValue() == 0;
+      }
+  );
+
+  //--- TODO : play with stategul lambda later
+  
   return 0;
 }
